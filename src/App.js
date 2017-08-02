@@ -26,17 +26,6 @@ class App extends Component {
     // setState with response -> vehiclesToDisplay
   }
 
-  addCar(){
-    let newCar = {
-      make: this.refs.make.vaule,
-      model: this.refs.model.value,
-      color: this.refs.color.value,
-      year: this.refs.year.value
-    }  
-    // axios (POST)
-    // setState with response -> vehiclesToDisplay
-  }
-
   getPotentialBuyers() {
     // axios (GET)
     // setState with response -> buyersToDisplay
@@ -54,7 +43,7 @@ class App extends Component {
   }
 
   filterByColor() {
-    let colort = this.refs.selectedColor.value;
+    let color = this.refs.selectedColor.value;
     // axios (GET)
     // setState with response -> vehiclesToDisplay
   }
@@ -63,6 +52,28 @@ class App extends Component {
     // axios (PUT)
     // setState with response -> vehiclesToDisplay
   }
+
+  addCar(){
+  let newCar = {
+    make: this.refs.make.value,
+    model: this.refs.model.value,
+    color: this.refs.color.value,
+    year: this.refs.year.value,
+    price: this.refs.price.value
+  }  
+  // axios (POST)
+  // setState with response -> vehiclesToDisplay
+}
+
+addBuyer() {
+  let newBuyer ={
+    name: this.refs.name.value,
+    phone: this.refs.phone.value,
+    address: this.refs.address.value
+  }
+  //axios (POST)
+  // setState with response -> buyersToDisplay
+}
 
 
   render() {
@@ -81,7 +92,7 @@ class App extends Component {
             onClick={ () => this.updatePrice('down') }
             >Decrease Price</button>  
           <button 
-            onClick={ this.onSoldButtonClick }
+            onClick={ () => this.onSoldButtonClick(v.id) }
             >SOLD!</button>
           <hr className='hr' />
         </div> 
@@ -156,10 +167,13 @@ class App extends Component {
         </p>
         <p className='form-wrap'>
           Add Possible buyer:
-          <input className='btn-sp' placeholder='name' />
-          <input className='btn-sp' placeholder='phone' />
-          <input className='btn-sp' placeholder='address' />
-          <button className='btn-sp'>Add</button>
+          <input className='btn-sp' placeholder='name' ref='name'/>
+          <input className='btn-sp' placeholder='phone' ref='phone'/>
+          <input className='btn-sp' placeholder='address' ref='address'/>
+          <button 
+            onClick={ this.addBuyer }
+            className='btn-sp' 
+            >Add</button>
         </p>
         
 
