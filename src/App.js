@@ -10,30 +10,55 @@ class App extends Component {
 
     this.state = {
       vehiclesToDisplay: [],
-      buyersToDisplay: []
+      buyersToDisplay: [],
+      vehicleURL: 'https://joes-autos.herokuapp.com'
     }
 
     this.getVehicles = this.getVehicles.bind(this);
     this.getPotentialBuyers = this.getPotentialBuyers.bind(this);
     this.onSoldButtonClick = this.onSoldButtonClick.bind(this);
     this.addCar = this.addCar.bind(this);
+    this.addBuyer= this.addBuyer.bind(this);
     this.filterByColor = this.filterByColor.bind(this);
     this.filterByMake = this.filterByMake.bind(this);
   }
 
+componentDidMount(){
+  this.getVehicles()
+}
+
   getVehicles() {
-    // axios (GET)
-    // setState with response -> vehiclesToDisplay
+    axios.get(this.state.vehicleURL + '/api/vehicles')
+    
+    .then ((response) => {
+          // setState with response -> vehiclesToDisplay  
+          this.setState({
+            vehiclesToDisplay: response.data.vehicles})
+      })
+    
   }
 
   getPotentialBuyers() {
-    // axios (GET)
-    // setState with response -> buyersToDisplay
+    //axious (GET)
+    axios.get(this.state.vehicleURL + '/api/buyers')
+      .then((response) => {
+      // setState with response -> buyersToDisplay
+        this.setState ({
+          buyersToDisplay: response.data.buyers
+        })
+      })
+
   }
 
-  onSoldButtonClick() {
+  onSoldButtonClick(id) {
     // axios (DELETE)
-    // setState with response -> vehiclesToDisplay
+    axios.delete(this.state.vehiclesURL + '/api/vehicles/' + id)
+      .then ((response) => {
+        // setState with response -> vehiclesToDisplay
+        this.setState ({
+        vehiclesToDisplay: response.data.vehicles
+        })
+      })
   }
 
   filterByMake() {
@@ -50,6 +75,12 @@ class App extends Component {
 
   updatePrice(priceChange) {
     // axios (PUT)
+    axios.put(this.state.vehiclesURL + '/api/vehicles/' + id + '/' + priceChange)
+      .then((response) => {
+        this.setState({
+          vehiclesToDisplay: response.data.vehicles
+        })
+      })
     // setState with response -> vehiclesToDisplay
   }
 
@@ -62,6 +93,19 @@ class App extends Component {
     price: this.refs.price.value
   }  
   // axios (POST)
+  axios.post(this.state.vehicleURL + '/api/vehicles', newCar)
+    .then((response) => {
+      if(response.status === 200){
+        this.setState ({
+          success: true,
+          vehiclesToDisplay: response.data.vehicles
+        })
+      } else {
+        this.setState ({
+          success: false
+        })
+      }
+    })
   // setState with response -> vehiclesToDisplay
 }
 
@@ -72,6 +116,19 @@ addBuyer() {
     address: this.refs.address.value
   }
   //axios (POST)
+  axios.post(this.state.vehicleURL + '/api/buyers', newBuyer)
+    .then((response) => {
+      if(response.status === 200) {
+        this.setState ({
+          success: true,
+          buyersToDisplay: response.data.buyers
+        })
+      } else {
+        this.setState ({
+          success: false
+        })
+      }
+    })
   // setState with response -> buyersToDisplay
 }
 
@@ -86,10 +143,10 @@ addBuyer() {
           <p>Color: { v.color }</p>
           <p>Price: { v.price }</p>
           <button
-            onClick={ () => this.updatePrice('up') }
+            onClick={ () => this.updatePrice(v.id, 'up') }
             >Increase Price</button>
           <button
-            onClick={ () => this.updatePrice('down') }
+            onClick={ () => this.updatePrice(v.id, 'down') }
             >Decrease Price</button>  
           <button 
             onClick={ () => this.onSoldButtonClick(v.id) }
@@ -163,7 +220,8 @@ addBuyer() {
           <input className='btn-sp' placeholder='year' ref='year'/>
           <input className='btn-sp' placeholder='color' ref='color'/>
           <input className='btn-sp' placeholder='price' ref='price'/>
-          <button className='btn-sp' onClick={this.addCar}>Add</button>
+          <button className='btn-sp' onClick={this.addCar}
+            style={ {backgroundColor: this.state.success ? 'lightgreen' : 'pink'}}>Add</button>
         </p>
         <p className='form-wrap'>
           Add Possible buyer:

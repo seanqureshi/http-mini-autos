@@ -23,6 +23,11 @@ URL: https://joes-autos.herokuapp.com
 - Get vehicles by make - '/api/vehiclesByMake'
   - Send with query: `'make'`
 
+getVehicles (){
+  // axios (GET)
+  
+}
+
 ###### POST
 - Add vehicle - '/api/vehicles'
   - Need make, model, year, color, price in body of request. ID is auto-generated.
